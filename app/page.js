@@ -1,95 +1,107 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client"
+import { useEffect, useState } from 'react';
 
 export default function Home() {
+
+  // **************** POST DATA ******************** 
+  // ****************   START   ******************** 
+  const [formData, setFormData] = useState({
+    nodeId: 'ns=3;s="OPCUA".value6',
+    attributeId: 13,
+    value: {
+      value: {
+        dataType: 12,
+        value: 'text',
+      },
+    },
+  });
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); 
+
+    try {
+      const response = await fetch('/api/data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        console.log('Data submitted successfully');
+        console.log(body);
+        // Add any additional logic here after successful submission
+      } else {
+        console.error('Failed to submit data');
+      }
+    } catch (error) {
+      console.error('Error submitting data:', error);
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData,
+      value: {
+        value: {
+          dataType: 12,
+          value: e.target.value,
+        },
+      },
+    });
+  };
+  // **************** POST DATA ******************** 
+  // ****************   END     ******************** 
+
+  const [data, setData] = useState([]);
+  const fetchData = async () => {
+    try {
+      const response = await fetch('/api/data'); // Replace with your actual endpoint
+      const result = await response.json();
+      const resultArray = result.message.map(item => item.value.value);
+      setData(resultArray);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  useEffect(() => {
+    // Fetch data initially when the component mounts
+    fetchData();
+
+    // Set up an interval to fetch data every second
+    const intervalId = setInterval(() => {
+      fetchData();
+    }, 1000);
+
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(intervalId);
+  }, []);
+
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>app/page.js</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    <>
+    <div>
+      <h1>Custom Page</h1>
+      <form onSubmit={handleSubmit}>
+        <label>
+          Data:
+          <input type="text" name="data" onChange={handleChange} />
+          <p>Data: {data[5]}</p>
+        </label>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+    
+    <div>
+        <h1>Your Next.js Page</h1>
+        {data && (
+          <div>
+            <p>Data: {data[0]}</p>
+            {/* Render the fetched data as needed */}
+          </div>
+        )}
+    </div>
+    </>
   )
 }

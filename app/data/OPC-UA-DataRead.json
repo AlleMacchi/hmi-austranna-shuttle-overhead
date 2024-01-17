@@ -1,0 +1,8 @@
+[
+    {"nodeId": "ns=3;s=\"OPCUA\".value1", "attributeTd": 13},
+    {"nodeId": "ns=3;s=\"OPCUA\".value2", "attributeTd": 13},
+    {"nodeId": "ns=3;s=\"OPCUA\".value3", "attributeTd": 13},
+    {"nodeId": "ns=3;s=\"OPCUA\".value4", "attributeTd": 13},
+    {"nodeId": "ns=3;s=\"OPCUA\".value5", "attributeTd": 13},
+    {"nodeId": "ns=3;s=\"OPCUA\".value6", "attributeTd": 13}
+]
